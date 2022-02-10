@@ -1,56 +1,49 @@
 <template>
-  <div
-      v-if="component"
-      :is="component"
-      :obj="obj"
-  />
+  <div v-if="component" :is="component" :obj="obj" />
 </template>
 
 <script>
-import Vue from 'vue';
+import Vue from "vue";
 
 export default {
-  name: 'coco-remote-component-loader',
+  name: "coco-remote-component-loader",
   props: {
     obj: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     config: {},
   },
   data() {
     return {
       data: {},
-      component: '',
-    }
+      component: "",
+    };
   },
   created() {
+    // eslint-disable-next-line no-debugger
+    debugger;
     // 动态添加组件，用于可视化编辑场景
-    const {
-      name,
-      js,
-      css,
-      index,
-    } = this.config;
+    const { name, js, css, index } = this.config;
     const component = window[name];
     if (!component) {
-      const script = document.createElement('script');
-      const link = document.createElement('link');
+      const script = document.createElement("script");
+      const link = document.createElement("link");
       script.src = js;
       link.href = css;
-      link.rel= 'stylesheet';
+      link.rel = "stylesheet";
       document.head.appendChild(link);
       document.body.appendChild(script);
       script.onload = () => {
-        this.$emit('onRemoteComponentLoad', {
+        this.$emit("onRemoteComponentLoad", {
           ...window[name],
           index,
         });
         this.component = Vue.extend(window[name].Component);
-      }
-    } else  {
+      };
+    } else {
       // 非动态化添加，用于构建场景
-      this.$emit('onRemoteComponentLoad', {
+      this.$emit("onRemoteComponentLoad", {
         ...window[name],
         index,
       });
@@ -61,9 +54,9 @@ export default {
     }
   },
   watch: {
-    'config.name'() {
+    "config.name"() {
       this.component = Vue.extend(window[this.config.name].Component);
-    }
-  }
-}
+    },
+  },
+};
 </script>

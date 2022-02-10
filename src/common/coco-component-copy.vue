@@ -8,7 +8,7 @@
       :key="index"
       v-for="(component, index) in components"
     >
-      <commponent
+      <div
         :is="component.name"
         :key="component + index"
         :obj="component.props || {}"
@@ -19,6 +19,110 @@
   </div>
 </template>
 <script>
+// window.__coco_config__ = {
+//   components: [
+//     {
+//       "name": "coco-components-loader",
+//       "config": {
+//         "name": "coco-global-banner.0.0.1",
+//         "description": "全局banner组件",
+//         "js": "https://coco-h5.github.io/coco-global-banner/coco-global-banner/coco-global-banner.0.0.1.umd.js",
+//         "css": "https://coco-h5.github.io/coco-global-banner/coco-global-banner/coco-global-banner.0.0.1.css",
+//         "index": 0
+//       },
+//       props: {
+//         src: "//sf6-scmcdn2-tos.pstatp.com/xitu_juejin_web/img/logo.a7995ad.svg"
+//       }
+//     },
+//     {
+//       name: "coco-banner",
+//       schema: {
+//         "type": "object",
+//         "properties": {
+//           "src": {
+//             "title": "图片地址",
+//             "type": "string",
+//             "format": "image"
+//           },
+//           "link": {
+//             "title": "跳转链接",
+//             "type": "string",
+//             "format": "url"
+//           }
+//         },
+//         "required": [
+//           "src"
+//         ]
+//       },
+//       props: {
+//         src: "//sf6-scmcdn2-tos.pstatp.com/xitu_juejin_web/img/logo.a7995ad.svg"
+//       }
+//     }
+//   ],
+//   remoteComponents: [{
+//     "name": "coco-global-banner",
+//     "description": "全局banner组件",
+//     "version": "0.0.1",
+//     schema: {
+//       "type": "object",
+//       "properties": {
+//         "src": {
+//           "title": "图片地址",
+//           "type": "string",
+//           "format": "image"
+//         },
+//         "link": {
+//           "title": "跳转链接",
+//           "type": "string",
+//           "format": "url"
+//         }
+//       },
+//       "required": [
+//         "src"
+//       ]
+//     }
+//   }],
+//   userSelectComponents: [
+//     {
+//       name: "coco-banner",
+//       schema: {
+//         "type": "object",
+//         "properties": {
+//           "src": {
+//             "title": "图片地址",
+//             "type": "string",
+//             "format": "image"
+//           },
+//           "link": {
+//             "title": "跳转链接",
+//             "type": "string",
+//             "format": "url"
+//           }
+//         },
+//         "required": [
+//           "src"
+//         ]
+//       },
+//       props: {
+//         src: "http://static.91jkys.com/activity/img/55844543eca34afe80f8dfb9d7c2b675.jpg"
+//       }
+//     },
+//     {
+//       "name": "coco-components-loader",
+//       "props": {
+//         src: "http://static.91jkys.com/activity/img/55844543eca34afe80f8dfb9d7c2b675.jpg"
+//       },
+//       "config": {
+//         "name": "coco-global-banner.0.0.1",
+//         "description": "全局banner组件",
+//         "js": "https://coco-h5.github.io/coco-global-banner/coco-global-banner/coco-global-banner.0.0.1.umd.js",
+//         "css": "https://coco-h5.github.io/coco-global-banner/coco-global-banner/coco-global-banner.0.0.1.css",
+//         "index": 0
+//       }
+//     }
+//   ]
+// }
+
 import {
   postMsgToParent,
   isEdit,
@@ -36,7 +140,6 @@ import CocoComponentsLoader from "./coco-remote-component-loader";
 export default {
   name: "coco-component",
   data() {
-    console.log("window.__coco_config__=", window.__coco_config__);
     return {
       init: false, // coco-admin 内嵌 iframe 初始化完成
       loaded: false, // 页面数据准备完成，为了预览功能
@@ -51,10 +154,8 @@ export default {
       },
       isEdit,
       components: window.__coco_config__.components.length
-        ? // window.__coco_config__.components 是服务端注入的用户选择组件
-          window.__coco_config__.components
-        : // 本地调试时，引入的组件
-          this.$slots.default.map((c) => {
+        ? window.__coco_config__.components // window.__coco_config__.components 是服务端注入的用户选择组件
+        : this.$slots.default.map((c) => {
             const name = c.componentOptions.tag;
             const { data } = config.componentConfig.filter(
               (config) => config.name === name
@@ -158,12 +259,9 @@ export default {
      * @param index
      */
     addComponent({ data, index }) {
-      // eslint-disable-next-line no-debugger
-      debugger;
       // 没有 schema 是系统组件
       this.currentIndex = index ? index + 1 : index;
       if (!data.schema) {
-        // 远程组件
         this.components = [
           ...this.components.slice(0, this.currentIndex),
           {
@@ -177,7 +275,6 @@ export default {
           ...this.components.slice(this.currentIndex, this.components.length),
         ];
       } else {
-        // 模板组件
         this.components = [
           ...this.components.slice(0, this.currentIndex),
           {
