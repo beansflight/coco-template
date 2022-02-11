@@ -21,8 +21,6 @@ export default {
     };
   },
   created() {
-    // eslint-disable-next-line no-debugger
-    debugger;
     // 动态添加组件，用于可视化编辑场景
     const { name, js, css, index } = this.config;
     const component = window[name];

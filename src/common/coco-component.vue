@@ -158,8 +158,6 @@ export default {
      * @param index
      */
     addComponent({ data, index }) {
-      // eslint-disable-next-line no-debugger
-      debugger;
       // 没有 schema 是系统组件
       this.currentIndex = index ? index + 1 : index;
       if (!data.schema) {
